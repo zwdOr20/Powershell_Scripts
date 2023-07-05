@@ -1,0 +1,92 @@
+$files = dir
+# where & sort
+$files | sort -property length | where {($_.name -like ".*") -and ($_.length -gt 10)}
+# for loop 
+$numberList = 1..10
+$numberList 1..10 | foreach (write-host $_)
+
+# odd numbers
+$numbers | foreach { if($_%2){ write-Host "$_ is odd" }}
+
+# arrays
+$array = @("first","seconf","thirth")
+# dictionary
+$dict = @{"key1" : 1; "Key2" ; 2}
+$dict["key2"] = "new value"
+$dict["insertKey"] =  "vamie"
+$dict.Remove("insertKey")
+
+# formating object output 
+$files = dir
+# formats objects as a wide table that displays only one property of each object. 
+$files | format-wide -property length
+
+#formats the output of a command as a list of properties in which each property is displayed on a separate line. 
+$files | format-list -property *  
+$files | format-list -property length, name  
+
+#formats as table
+$Get-process | format-table -property length, name  -groupby company
+
+#The Invoke-Expression cmdlet evaluates or runs a specified string as a command and returns the results of the expression or command. Without Invoke-Expression , a string submitted at the command line is returned (echoed) unchanged. Expressions are evaluated and run in the current scope.
+invoke-expression c:\tmp\file.htm
+
+# save to file
+get-process | out-file c:\tmp\fileShell.txt
+get-process | converto-html| out-file c:\temp\fileShell.htm
+get-process | export-csv c:\temp\fieexport.csv
+
+# Importing data from csv
+$ data = import-csv c:\temp\fieexport.csv
+
+
+# get object properties
+$names | get-member
+
+#take array element => ort & select
+($names | sort -property length -descending)[0]
+$names | sort -property length -descending | select -first 1
+
+# get the beggest element of an array objects
+
+$names | foreach{if($_.length -gt $obj.length){$obj = $_}} 
+write-host $obj
+
+
+# functions
+
+# retunr 3 after caling do-something
+function do-something { return 1+2 }
+
+#passing parameters to function
+
+function add-numbers
+{ 
+  param([int]$num1, [int]$num2)
+  return $num1 + $num2
+}
+ CMD  : add-numbers 1 2 | add-numbers -num1 1 -num2 2  | $result = add-numbers -num1 1 -num2 2 | $result += add-numbers -num1 1 -num2 2
+
+
+ # write script : always use this from
+
+ #part params
+ param([string]$dir = "c:\tmp") 
+
+ #part functions
+function get-size
+{ 
+   $result = get-childitem $dir -recuse | mesure-object -property length -sum
+  return [math]::Round($result.sum/1GB, 2)
+}
+
+ # main processing
+ get-size -dir "C:\"
+
+ # how to use .net mothod in powershel
+ $fileName = [System.IO.Path]::GetFileName('C:\Windows\explorer.exe')
+ $Object = [System.DateTime]::Now
+ $object.AddHours(1)
+
+
+
